@@ -3,8 +3,6 @@ import torch
 from chess import Color, WHITE, BLACK, PieceType, PAWN, KNIGHT, BISHOP, ROOK, \
     QUEEN, Board
 from chess.pgn import read_game, GameNode
-from sklearn.metrics import classification_report, accuracy_score
-from sklearn.model_selection import train_test_split
 from torch.utils.data import TensorDataset, DataLoader
 
 from PytorchNN import Network
