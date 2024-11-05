@@ -16,18 +16,32 @@ class Network(nn.Module):
     def __init__(self):
         super().__init__()
         self.network_layers = nn.Sequential(
-            nn.Linear(10, 16),
+            nn.Linear(10, 128),
             nn.ReLU(),
-            nn.Linear(16, 8),
+            nn.Dropout(0.2),
+
+            nn.Linear(128, 64),
             nn.ReLU(),
-            nn.Linear(8, 3),
-            nn.Softmax(dim=1)
+            nn.Dropout(0.2),
+
+            nn.Linear(64, 32),
+            nn.ReLU(),
+            nn.Dropout(0.2),
+
+            nn.Linear(32, 3),
         )
+        self.output_layer = nn.Softmax(dim=1)
         self.loss_func = nn.CrossEntropyLoss()
-        self.optimizer = optim.Adam(self.parameters(), lr=0.05)
+        self.optimizer = optim.Adam(self.parameters(), lr=0.01)
 
     def forward(self, x):
         return self.network_layers(x)
+
+    def predict(self, x):
+        self.eval()
+        with torch.no_grad():
+            out = self.output_layer(self(x))
+        return out
 
     def train_model(self, train_loader, epochs=50):
         self.to(DEVICE)
@@ -67,7 +81,7 @@ class Network(nn.Module):
                 inputs, labels = inputs.to(DEVICE), labels.to(DEVICE)
                 class_labels = labels.argmax(dim=1)
                 outputs = self(inputs)
-                _, predicted = torch.max(outputs.data, 1)
+                _, predicted = torch.max(outputs, 1)
                 total += labels.size(0)
                 correct += (predicted == class_labels).sum().item()
         accuracy = 100 * correct / total
