@@ -51,15 +51,13 @@ class Network(nn.Module):
                 inputs = inputs.to(DEVICE)
                 labels = labels.to(DEVICE)
 
-                class_labels = labels.argmax(dim=1)
-
                 self.optimizer.zero_grad()
 
                 # Forward pass
                 predictions = self(inputs)
 
                 # Loss
-                loss = self.loss_func(predictions, class_labels)
+                loss = self.loss_func(predictions, labels)
 
                 # Backward pass
                 loss.backward()
@@ -68,8 +66,7 @@ class Network(nn.Module):
                 total_loss += loss.item()
 
             # Print progress
-            if epoch % int(0.05 * epochs) == 0:
-                print(f"Epoch {epoch + 1} / {epochs} - Loss: {total_loss / len(train_loader):.4f}")
+            print(f"Epoch {epoch + 1} / {epochs} - Loss: {total_loss / len(train_loader):.4f}")
 
     def test_model(self, test_loader):
         self.to(DEVICE)
