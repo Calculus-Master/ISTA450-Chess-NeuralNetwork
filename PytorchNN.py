@@ -30,7 +30,7 @@ class Network(nn.Module):
 
             nn.Linear(32, 3),
         )
-        self.output_layer = nn.Softmax(dim=1)
+        self.output_layer = nn.Softmax()
         self.loss_func = nn.CrossEntropyLoss()
         self.optimizer = optim.Adam(self.parameters(), lr=0.01)
 
